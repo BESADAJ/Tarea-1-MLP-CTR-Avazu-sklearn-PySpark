@@ -1,0 +1,637 @@
+
+<!DOCTYPE html>
+
+
+<html lang="es" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>10. Reflexión crítica &#8212; Avazu CTR: MLP en scikit-learn y PySpark</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=78d55cf8"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script src="_static/translations.js?v=d190bf04"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '10_reflexion';</script>
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Búsqueda" href="search.html" />
+    <link rel="next" title="11. Anexo de reproducibilidad" href="11_reproducibilidad.html" />
+    <link rel="prev" title="9. Comparación de resultados" href="09_comparacion.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="es"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Saltar al contenido principal</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Volver arriba</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Advertencia de versión"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Avazu CTR: MLP en scikit-learn y PySpark</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Búsqueda" aria-label="Búsqueda" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Búsqueda</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Predicción de clics en Avazu con MLP: scikit-learn frente a PySpark
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Datos</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="01_ficha_datos.html">1. Ficha de datos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02_eda.html">2. Análisis exploratorio</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03_protocolo.html">3. Protocolo experimental y preprocesamiento</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Modelado</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="04_sklearn.html">4. Modelado con scikit-learn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05_pyspark.html">5. Modelado con PySpark</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Resultados</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="06_evaluacion.html">6. Evaluación final en la prueba</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07_benchmark.html">7. Benchmarking computacional</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08_interpretabilidad.html">8. Interpretabilidad</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09_comparacion.html">9. Comparación de resultados</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">10. Reflexión crítica</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Anexos</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="11_reproducibilidad.html">11. Anexo de reproducibilidad</a></li>
+<li class="toctree-l1"><a class="reference internal" href="12_cumplimiento.html">12. Correspondencia con los requisitos</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/BESADAJ/Tarea-1-MLP-CTR-Avazu-sklearn-PySpark" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Repositorio de origen"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Descarga esta pagina">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/10_reflexion.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Descargar archivo fuente"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Imprimir en PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Modo de pantalla completa"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="claro/oscuro" aria-label="claro/oscuro" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Búsqueda" aria-label="Búsqueda" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>10. Reflexión crítica</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contenido </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#que-entorno-fue-mas-rapido-en-que-rango-de-volumen-y-por-que">¿Qué entorno fue más rápido, en qué rango de volumen y por qué?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cual-fue-mas-preciso-y-calibrado-y-es-significativa-la-diferencia">¿Cuál fue más preciso y calibrado, y es significativa la diferencia?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cuando-se-justifica-pyspark-y-cuando-es-sobrecosto">¿Cuándo se justifica PySpark y cuándo es sobrecosto?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#que-limitaciones-impone-el-mlp-nativo-de-spark-frente-a-una-red-con-embeddings">¿Qué limitaciones impone el MLP nativo de Spark frente a una red con embeddings?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#que-aporta-lime-que-no-puede-garantizar-y-como-se-compara-con-shap">¿Qué aporta LIME, qué no puede garantizar y cómo se compara con SHAP?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#amenazas-a-la-validez">Amenazas a la validez</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="reflexion-critica">
+<h1>10. Reflexión crítica<a class="headerlink" href="#reflexion-critica" title="Link to this heading">#</a></h1>
+<p>Cada respuesta remite a la evidencia del capítulo indicado.</p>
+<section id="que-entorno-fue-mas-rapido-en-que-rango-de-volumen-y-por-que">
+<h2>¿Qué entorno fue más rápido, en qué rango de volumen y por qué?<a class="headerlink" href="#que-entorno-fue-mas-rapido-en-que-rango-de-volumen-y-por-que" title="Link to this heading">#</a></h2>
+<p>Las cifras vienen del benchmark limpio del capítulo 7: un proceso nuevo por punto y el equipo dedicado.</p>
+<ul class="simple">
+<li><p><strong>Hasta 1 millón de filas, scikit-learn es más rápido en todo.</strong> Spark arrastra unos 45 s fijos de preparación (arranque de la
+JVM, planificación y 23 agregaciones). Con 100 mil filas, el proceso completo tarda 3 a 4 s en scikit-learn y 50 a 57 s en
+Spark.</p></li>
+<li><p><strong>Con el modelo lineal, Spark gana desde unos 5 millones de filas sin perder calidad.</strong> Su tiempo crece con exponente 0,2 y el
+de scikit-learn con 0,9 a 1,15, porque SGD corre en un solo hilo. Con 10 millones, el ajuste es 8,7 veces más rápido (21,6 s
+frente a 187,8 s) y el total 1,4 veces (156 s frente a 225 s), con el mismo AUC (0,731 frente a 0,730).</p></li>
+<li><p><strong>Con el MLP, Spark es más rápido en el ajuste desde unas 850 mil filas, pero no es comparable:</strong> pierde 0,07 a 0,08 de AUC en
+todos los volúmenes, y en tiempo total ni siquiera gana con 10 millones.</p></li>
+<li><p><strong>En predicción y lectura gana siempre la máquina sola.</strong> scikit-learn puntúa de 2 a 8 millones de filas por segundo, frente a
+55 a 95 mil de Spark. DuckDB y Polars agregan el Parquet en 0,1 y 0,3 s, frente a 6,5 s de Spark.</p></li>
+<li><p><strong>El paralelismo tiene techo en un portátil.</strong> Amdahl da f = 0,23 para la LR de Spark, con una aceleración máxima de 4,3, y f
+cercano a 0,1 para el MLP de Spark y HGB. De 4 a 8 núcleos casi no se gana, porque los 4 últimos son de eficiencia.</p></li>
+</ul>
+</section>
+<section id="cual-fue-mas-preciso-y-calibrado-y-es-significativa-la-diferencia">
+<h2>¿Cuál fue más preciso y calibrado, y es significativa la diferencia?<a class="headerlink" href="#cual-fue-mas-preciso-y-calibrado-y-es-significativa-la-diferencia" title="Link to this heading">#</a></h2>
+<p>En la prueba (día 30):</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Modelo</p></th>
+<th class="head"><p>ROC AUC</p></th>
+<th class="head"><p>ECE</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>HGB con target encoding, scikit-learn, 10 M</p></td>
+<td><p>0,733</p></td>
+<td><p>0,012</p></td>
+</tr>
+<tr class="row-odd"><td><p>Regresión logística de Spark, hash12, 32,4 M</p></td>
+<td><p>0,7255</p></td>
+<td><p>0,010</p></td>
+</tr>
+<tr class="row-even"><td><p>SGD logístico con hash12, scikit-learn, 10 M</p></td>
+<td><p>0,721</p></td>
+<td><p>0,015</p></td>
+</tr>
+<tr class="row-odd"><td><p>MLP <code class="docutils literal notranslate"><span class="pre">(100,)</span></code> con hash12, scikit-learn, 10 M</p></td>
+<td><p>0,717</p></td>
+<td><p>0,029</p></td>
+</tr>
+<tr class="row-even"><td><p>GBT de Spark, frecuencia, 32,4 M, 20 árboles</p></td>
+<td><p>0,698</p></td>
+<td><p>0,026</p></td>
+</tr>
+<tr class="row-odd"><td><p>MLP de Spark, hash 2^9, 1 M</p></td>
+<td><p>0,698</p></td>
+<td><p>0,015</p></td>
+</tr>
+<tr class="row-even"><td><p>MLP de Spark, frecuencia, 32,4 M</p></td>
+<td><p>0,639</p></td>
+<td><p>0,022</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>P3 tiene respuesta negativa:</strong> el MLP no mejora a las líneas base simples. Pierde frente a HGB por 0,016 de AUC, como ya pasaba en
+validación (0,739 frente a 0,743). En la prueba pierde también frente a SGD, aunque en validación le ganaba (0,739 frente a 0,728). Con 4,2 millones de filas, DeLong y McNemar marcan significativas todas
+las diferencias tras Holm. La magnitud importa más: entre SGD y el MLP la distancia es menor que la desviación del MLP entre
+semillas (0,0065).</p>
+<p>El MLP es además el peor calibrado. Su caída entre validación y prueba (0,739 a 0,717, es decir 0,022) es la mayor de los tres,
+frente a 0,009 de HGB y 0,007 de SGD: se ajusta a
+interacciones de los días 21 a 28 que el día 30 ya no cumple. El EDA lo anticipaba: <code class="docutils literal notranslate"><span class="pre">C14</span></code>, <code class="docutils literal notranslate"><span class="pre">C17</span></code> y <code class="docutils literal notranslate"><span class="pre">C21</span></code> tienen PSI mayor que 0,5.</p>
+</section>
+<section id="cuando-se-justifica-pyspark-y-cuando-es-sobrecosto">
+<h2>¿Cuándo se justifica PySpark y cuándo es sobrecosto?<a class="headerlink" href="#cuando-se-justifica-pyspark-y-cuando-es-sobrecosto" title="Link to this heading">#</a></h2>
+<p>En una sola máquina con 32 GB, Avazu completo no necesita Spark: entra en memoria como CSR (hash12) o como tabla densa
+(frecuencia, target). Se justifica en estos casos:</p>
+<ul class="simple">
+<li><p>Cuando los datos no caben: Criteo 1TB, o varios días de Avazu sin muestrear.</p></li>
+<li><p>Cuando el modelo es lineal y disperso, donde Spark escala casi sin costo adicional.</p></li>
+<li><p>Cuando se necesita tolerancia a fallos o integración con un lago de datos ya en Spark.</p></li>
+</ul>
+<p>Es sobrecosto con 1 millón de filas o menos, y para el MLP en cualquier volumen.</p>
+</section>
+<section id="que-limitaciones-impone-el-mlp-nativo-de-spark-frente-a-una-red-con-embeddings">
+<h2>¿Qué limitaciones impone el MLP nativo de Spark frente a una red con embeddings?<a class="headerlink" href="#que-limitaciones-impone-el-mlp-nativo-de-spark-frente-a-una-red-con-embeddings" title="Link to this heading">#</a></h2>
+<p>La más grave no está en la lista del enunciado: <strong>densifica la entrada</strong> (capítulo 5.1). Con <code class="docutils literal notranslate"><span class="pre">d</span> <span class="pre">=</span> <span class="pre">2^12</span></code> falla con 300 mil filas,
+menos del 1 % de los datos. Eso obliga a escoger entre poca identidad categórica (frecuencia, <code class="docutils literal notranslate"><span class="pre">d</span> <span class="pre">=</span> <span class="pre">27</span></code>) o pocas filas (hash 2^9).
+Una red con embeddings tiene costo de memoria proporcional a las categorías vistas, no a <code class="docutils literal notranslate"><span class="pre">n</span> <span class="pre">x</span> <span class="pre">d</span></code>, y entrenaría con todos los datos.
+Además, el MLP de Spark no tiene dropout ni L2, ni pesos de clase, usa sigmoide y el solver <code class="docutils literal notranslate"><span class="pre">gd</span></code> no converge en la práctica.</p>
+</section>
+<section id="que-aporta-lime-que-no-puede-garantizar-y-como-se-compara-con-shap">
+<h2>¿Qué aporta LIME, qué no puede garantizar y cómo se compara con SHAP?<a class="headerlink" href="#que-aporta-lime-que-no-puede-garantizar-y-como-se-compara-con-shap" title="Link to this heading">#</a></h2>
+<p>LIME aporta una explicación rápida en el lenguaje de las variables originales, aunque el modelo use hashing. No garantiza
+fidelidad: el sustituto local explica cerca del 30 % de la variación. Tampoco estabilidad, que exige 15.000 muestras para llegar a
+un Jaccard de 0,87. Y no coincide con SHAP: 19 % de variables comunes en el top 5. SHAP y la permutación sí coinciden entre sí
+(Spearman 0,93), y apuntan al contexto de publicación: <code class="docutils literal notranslate"><span class="pre">site_category</span></code>, <code class="docutils literal notranslate"><span class="pre">app_id</span></code>, <code class="docutils literal notranslate"><span class="pre">site_domain</span></code> y <code class="docutils literal notranslate"><span class="pre">site_id</span></code>.</p>
+</section>
+<section id="amenazas-a-la-validez">
+<h2>Amenazas a la validez<a class="headerlink" href="#amenazas-a-la-validez" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Amenaza</p></th>
+<th class="head"><p>Qué se hizo</p></th>
+<th class="head"><p>Qué queda</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Deriva temporal</p></td>
+<td><p>Partición por día y PSI</p></td>
+<td><p>Un solo día de prueba, un jueves. Otro día podría ordenar distinto los modelos</p></td>
+</tr>
+<tr class="row-odd"><td><p>Fuga de información</p></td>
+<td><p>Ajustes solo con entrenamiento, target por día fuera de pliegue, prueba bloqueada</p></td>
+<td><p>La parada temprana del MLP usa un 10 % aleatorio interno</p></td>
+</tr>
+<tr class="row-even"><td><p>Anonimización</p></td>
+<td><p>Se respetan las variables tal como vienen</p></td>
+<td><p>No se puede interpretar <code class="docutils literal notranslate"><span class="pre">C14</span></code> a <code class="docutils literal notranslate"><span class="pre">C21</span></code> ni validar su semántica</p></td>
+</tr>
+<tr class="row-odd"><td><p>Sesgo de muestreo</p></td>
+<td><p>Muestras por hash de <code class="docutils literal notranslate"><span class="pre">id</span></code>, anidadas</p></td>
+<td><p>Hiperparámetros elegidos con 1 millón y usados con 10 millones</p></td>
+</tr>
+<tr class="row-even"><td><p>Selección</p></td>
+<td><p>Todas las decisiones en el día 29</p></td>
+<td><p>hash12 y <code class="docutils literal notranslate"><span class="pre">(100,)</span></code> se eligieron por presupuesto o parsimonia, con pérdidas pequeñas documentadas</p></td>
+</tr>
+<tr class="row-odd"><td><p>Entorno</p></td>
+<td><p>Mediciones en proceso limpio</p></td>
+<td><p>Windows, modo local y un portátil: los tiempos de Spark no representan un clúster</p></td>
+</tr>
+<tr class="row-even"><td><p>Generalización entre fuentes</p></td>
+<td><p>No hecho</p></td>
+<td><p>Sin Criteo, por disco (capítulo 1)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="09_comparacion.html"
+       title="página anterior">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">anterior</p>
+        <p class="prev-next-title">9. Comparación de resultados</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="11_reproducibilidad.html"
+       title="siguiente página">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">siguiente</p>
+        <p class="prev-next-title">11. Anexo de reproducibilidad</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contenido
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#que-entorno-fue-mas-rapido-en-que-rango-de-volumen-y-por-que">¿Qué entorno fue más rápido, en qué rango de volumen y por qué?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cual-fue-mas-preciso-y-calibrado-y-es-significativa-la-diferencia">¿Cuál fue más preciso y calibrado, y es significativa la diferencia?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cuando-se-justifica-pyspark-y-cuando-es-sobrecosto">¿Cuándo se justifica PySpark y cuándo es sobrecosto?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#que-limitaciones-impone-el-mlp-nativo-de-spark-frente-a-una-red-con-embeddings">¿Qué limitaciones impone el MLP nativo de Spark frente a una red con embeddings?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#que-aporta-lime-que-no-puede-garantizar-y-como-se-compara-con-shap">¿Qué aporta LIME, qué no puede garantizar y cómo se compara con SHAP?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#amenazas-a-la-validez">Amenazas a la validez</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+Por Jaime Andrés Besada, Ivan Berrio
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

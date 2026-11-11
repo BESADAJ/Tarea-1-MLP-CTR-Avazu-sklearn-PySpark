@@ -1,0 +1,618 @@
+
+<!DOCTYPE html>
+
+
+<html lang="es" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>3. Protocolo experimental y preprocesamiento &#8212; Avazu CTR: MLP en scikit-learn y PySpark</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=78d55cf8"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script src="_static/translations.js?v=d190bf04"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '03_protocolo';</script>
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Búsqueda" href="search.html" />
+    <link rel="next" title="4. Modelado con scikit-learn" href="04_sklearn.html" />
+    <link rel="prev" title="2. Análisis exploratorio" href="02_eda.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="es"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Saltar al contenido principal</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Volver arriba</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Advertencia de versión"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Avazu CTR: MLP en scikit-learn y PySpark</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Búsqueda" aria-label="Búsqueda" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Búsqueda</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Predicción de clics en Avazu con MLP: scikit-learn frente a PySpark
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Datos</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="01_ficha_datos.html">1. Ficha de datos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02_eda.html">2. Análisis exploratorio</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">3. Protocolo experimental y preprocesamiento</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Modelado</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="04_sklearn.html">4. Modelado con scikit-learn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05_pyspark.html">5. Modelado con PySpark</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Resultados</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="06_evaluacion.html">6. Evaluación final en la prueba</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07_benchmark.html">7. Benchmarking computacional</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08_interpretabilidad.html">8. Interpretabilidad</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09_comparacion.html">9. Comparación de resultados</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10_reflexion.html">10. Reflexión crítica</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Anexos</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="11_reproducibilidad.html">11. Anexo de reproducibilidad</a></li>
+<li class="toctree-l1"><a class="reference internal" href="12_cumplimiento.html">12. Correspondencia con los requisitos</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/BESADAJ/Tarea-1-MLP-CTR-Avazu-sklearn-PySpark" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Repositorio de origen"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Descarga esta pagina">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/03_protocolo.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Descargar archivo fuente"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Imprimir en PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Modo de pantalla completa"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="claro/oscuro" aria-label="claro/oscuro" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Búsqueda" aria-label="Búsqueda" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>3. Protocolo experimental y preprocesamiento</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contenido </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#particion-temporal">Partición temporal</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reglas-contra-la-fuga-de-informacion">Reglas contra la fuga de información</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#logica-comun-en-ambos-entornos">Lógica común en ambos entornos</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#semillas-y-repeticiones">Semillas y repeticiones</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#desbalance">Desbalance</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="protocolo-experimental-y-preprocesamiento">
+<h1>3. Protocolo experimental y preprocesamiento<a class="headerlink" href="#protocolo-experimental-y-preprocesamiento" title="Link to this heading">#</a></h1>
+<section id="particion-temporal">
+<h2>Partición temporal<a class="headerlink" href="#particion-temporal" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Conjunto</p></th>
+<th class="head"><p>Días</p></th>
+<th class="head"><p>Filas</p></th>
+<th class="head"><p>Uso</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Entrenamiento</p></td>
+<td><p>21 a 28</p></td>
+<td><p>32.377.421</p></td>
+<td><p>Ajustar modelos, codificadores y escaladores</p></td>
+</tr>
+<tr class="row-odd"><td><p>Validación</p></td>
+<td><p>29</p></td>
+<td><p>3.832.608</p></td>
+<td><p>Elegir hiperparámetros, codificación y umbral</p></td>
+</tr>
+<tr class="row-even"><td><p>Prueba</p></td>
+<td><p>30</p></td>
+<td><p>4.218.938</p></td>
+<td><p>Medición final, una sola vez</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>La prueba está bloqueada por código: <code class="docutils literal notranslate"><span class="pre">ctr.data.load(&quot;test&quot;)</span></code> falla salvo que la llame <code class="docutils literal notranslate"><span class="pre">scripts/07_final_test.py</span></code>.
+Las corridas de Spark guardan sus predicciones sobre el día 30 sin calcular ninguna métrica.</p>
+</section>
+<section id="reglas-contra-la-fuga-de-informacion">
+<h2>Reglas contra la fuga de información<a class="headerlink" href="#reglas-contra-la-fuga-de-informacion" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p><strong>Todo se ajusta con entrenamiento:</strong> vocabulario, umbral de raras, conteos, tablas de target encoding y
+escaladores.</p></li>
+<li><p><strong>Las categorías no vistas</strong> caen en <code class="docutils literal notranslate"><span class="pre">__RARE__</span></code>.</p></li>
+<li><p><strong>Target encoding fuera de pliegue:</strong> cada fila de entrenamiento recibe una media calculada sin su día. Es
+anidado porque la selección ocurre afuera, sobre el día 29. Una fila nunca se codifica con su propia etiqueta.</p></li>
+<li><p><strong>Búsqueda de hiperparámetros temporal:</strong> Optuna evalúa cada intento sobre el día 29. No hay
+<code class="docutils literal notranslate"><span class="pre">GridSearchCV</span></code> con particiones aleatorias.</p></li>
+<li><p><strong>Muestras anidadas:</strong> <code class="docutils literal notranslate"><span class="pre">sample_key</span></code> es un hash de <code class="docutils literal notranslate"><span class="pre">id</span></code>, guardado en el Parquet. Filtrarlo en <code class="docutils literal notranslate"><span class="pre">sample_key</span> <span class="pre">&lt;</span> <span class="pre">f</span></code> da
+la misma muestra en Polars y en Spark, y cada tamaño contiene al anterior.</p></li>
+</ol>
+<p>Queda una excepción conocida. <code class="docutils literal notranslate"><span class="pre">early_stopping=True</span></code> en <code class="docutils literal notranslate"><span class="pre">MLPClassifier</span></code> aparta un 10 % <strong>aleatorio</strong> del
+entrenamiento y detiene por <strong>exactitud</strong>. El enunciado pide esa opción, y aquí se cumple, pero tiene dos costos:
+esa partición interna no es temporal, y con clases desbalanceadas la exactitud se estanca pronto. Se ve en los
+resultados: casi todos los MLP paran entre la época 5 y la 8. La parada solo elige la época: el modelo y los
+hiperparámetros se juzgan con el día 29.</p>
+</section>
+<section id="logica-comun-en-ambos-entornos">
+<h2>Lógica común en ambos entornos<a class="headerlink" href="#logica-comun-en-ambos-entornos" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Paso</p></th>
+<th class="head"><p>scikit-learn</p></th>
+<th class="head"><p>PySpark</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Lectura</p></td>
+<td><p>Polars perezoso sobre Parquet</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">read.parquet</span></code> con rutas exactas</p></td>
+</tr>
+<tr class="row-odd"><td><p>Raras (menos de 10 apariciones)</p></td>
+<td><p>Tabla de conteos y join</p></td>
+<td><p>Tabla de conteos y <code class="docutils literal notranslate"><span class="pre">broadcast</span> <span class="pre">join</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Hashing</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">FeatureHasher</span></code> sobre el vocabulario</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">FeatureHasher</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Frecuencia</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">log1p</span></code> del conteo</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">log1p</span></code> del conteo</p></td>
+</tr>
+<tr class="row-even"><td><p>Target encoding</p></td>
+<td><p>Fuera de pliegue por día</p></td>
+<td><p>No se hizo, ver abajo</p></td>
+</tr>
+<tr class="row-odd"><td><p>Numéricas</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">log1p</span></code> de actividad de <code class="docutils literal notranslate"><span class="pre">device_ip</span></code> y <code class="docutils literal notranslate"><span class="pre">device_id</span></code>, seno y coseno de la hora</p></td>
+<td><p>Igual</p></td>
+</tr>
+<tr class="row-even"><td><p>Escalado</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">StandardScaler</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">StandardScaler</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Baja cardinalidad en árboles</p></td>
+<td><p>Frecuencia</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">StringIndexer</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Las funciones de hash no son idénticas: scikit-learn y Spark usan variantes distintas de MurmurHash3. Las
+colisiones concretas cambian, pero la lógica es la misma.</p>
+<p><strong>Target encoding solo en scikit-learn.</strong> El enunciado lo restringe así. Replicarlo en Spark sin UDF exigiría una
+agregación por pliegue y variable, con un join por combinación, y la fuga por error de implementación es más
+fácil de cometer que de detectar.</p>
+<p><strong>Variables temporales.</strong> De <code class="docutils literal notranslate"><span class="pre">hour</span></code> salen <code class="docutils literal notranslate"><span class="pre">day</span></code> (solo para partir, nunca como variable), <code class="docutils literal notranslate"><span class="pre">hod</span></code> y <code class="docutils literal notranslate"><span class="pre">dow</span></code>.</p>
+<p><strong>Por qué sin UDF en Spark.</strong> Los Python workers de PySpark 4.0.1 no arrancan en este Windows: falla la lectura
+de un recurso dentro de <code class="docutils literal notranslate"><span class="pre">pyspark.zip</span></code>. El pipeline se escribió entero con operadores de la JVM. Es una restricción
+del entorno, y además un buen hábito: una UDF de Python en Spark serializa cada fila.</p>
+</section>
+<section id="semillas-y-repeticiones">
+<h2>Semillas y repeticiones<a class="headerlink" href="#semillas-y-repeticiones" title="Link to this heading">#</a></h2>
+<p>Las semillas son 42 a 46. Cambian la inicialización y el orden de los lotes, no la muestra. Las tablas reportan
+media, desviación e intervalo t al 95 % con 5 repeticiones. Las excepciones se indican donde aparecen: el MLP de
+Spark con 32 millones de filas se entrena una sola vez, por costo.</p>
+</section>
+<section id="desbalance">
+<h2>Desbalance<a class="headerlink" href="#desbalance" title="Link to this heading">#</a></h2>
+<p>La tasa base ronda el 17 %. <code class="docutils literal notranslate"><span class="pre">MLPClassifier</span></code> no acepta pesos de clase, y <code class="docutils literal notranslate"><span class="pre">MultilayerPerceptronClassifier</span></code> tampoco. La
+ponderación se hace así: en SGD y HGB con <code class="docutils literal notranslate"><span class="pre">class_weight=&quot;balanced&quot;</span></code>, y en el MLP repitiendo positivos hasta
+igualar clases. Ese experimento está en las ablaciones del capítulo 4. El umbral de decisión se elige en validación
+maximizando F1 y se aplica sin cambios en la prueba.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="02_eda.html"
+       title="página anterior">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">anterior</p>
+        <p class="prev-next-title">2. Análisis exploratorio</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="04_sklearn.html"
+       title="siguiente página">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">siguiente</p>
+        <p class="prev-next-title">4. Modelado con scikit-learn</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contenido
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#particion-temporal">Partición temporal</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reglas-contra-la-fuga-de-informacion">Reglas contra la fuga de información</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#logica-comun-en-ambos-entornos">Lógica común en ambos entornos</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#semillas-y-repeticiones">Semillas y repeticiones</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#desbalance">Desbalance</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+Por Jaime Andrés Besada, Ivan Berrio
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
