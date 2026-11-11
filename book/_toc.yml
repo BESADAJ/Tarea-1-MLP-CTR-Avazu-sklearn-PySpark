@@ -1,0 +1,23 @@
+format: jb-book
+root: intro
+parts:
+  - caption: Datos
+    chapters:
+      - file: 01_ficha_datos
+      - file: 02_eda
+      - file: 03_protocolo
+  - caption: Modelado
+    chapters:
+      - file: 04_sklearn
+      - file: 05_pyspark
+  - caption: Resultados
+    chapters:
+      - file: 06_evaluacion
+      - file: 07_benchmark
+      - file: 08_interpretabilidad
+      - file: 09_comparacion
+      - file: 10_reflexion
+  - caption: Anexos
+    chapters:
+      - file: 11_reproducibilidad
+      - file: 12_cumplimiento

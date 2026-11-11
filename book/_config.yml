@@ -1,0 +1,22 @@
+title: "Avazu CTR: MLP en scikit-learn y PySpark"
+author: "Jaime Andrés Besada, Ivan Berrio"
+logo: ""
+execute:
+  execute_notebooks: "off"
+repository:
+  url: https://github.com/BESADAJ/Tarea-1-MLP-CTR-Avazu-sklearn-PySpark
+  branch: main
+html:
+  use_issues_button: false
+  use_repository_button: true
+  use_edit_page_button: false
+sphinx:
+  config:
+    language: es
+    nb_render_markdown_format: myst
+    html_show_copyright: false
+parse:
+  myst_enable_extensions:
+    - amsmath
+    - dollarmath
+    - colon_fence

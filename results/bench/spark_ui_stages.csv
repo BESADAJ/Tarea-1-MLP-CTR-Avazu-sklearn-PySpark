@@ -1,0 +1,13 @@
+fase,llamada,etapas,tareas,dur_s,run_s,cpu_s,gc_s,deser_s,entrada_mb,shuffle_lect_mb,shuffle_escr_mb,spill_disco_mb,mem_pico_mb
+Lectura y preprocesamiento,$anonfun$withThreadLocalCaptured$2 @ CompletableFuture.java,80,2272,69.825,275.062,247.0625,6.669,7.044,1849.7923669815063,0.012286186218261719,191.6994400024414,0.0,14552.355102539062
+Entrenamiento (l-bfgs),treeAggregate @ LBFGS.scala,46,460,26.948999999999998,202.776,183.765625,1.176,2.378,14573.117752075195,4.334829330444336,4.334829330444336,0.0,0.198974609375
+Lectura y preprocesamiento,first @ C,93,1703,20.053,117.058,71.1875,3.803,4.507,5705.767388343811,24.24703311920166,24.24703311920166,0.0,2111.99951171875
+Lectura y preprocesamiento,count @ NativeMethodAccessorImpl.java,2,24,3.5909999999999997,22.521,20.71875,0.276,0.169,80.41780376434326,191.68715381622314,0.0,0.0,12935.4267578125
+Entrenamiento (l-bfgs),count @ LBFGS.scala,1,16,1.869,13.276,10.515625,0.44,0.67,186.74301719665527,0.0,0.0,0.0,0.0
+Evaluación,map @ BinaryClassificationMetrics.scala,1,8,0.98,6.787,5.15625,0.0,0.144,6.900704383850098,0.0,4.058417320251465,0.0,28.46961784362793
+Lectura y preprocesamiento,parquet @ NativeMethodAccessorImpl.java,2,2,0.845,0.399,0.0625,0.033,0.139,0.0,0.0,0.0,0.0,0.0
+Evaluación,count @ BinaryClassificationMetrics.scala,1,8,0.492,3.845,2.71875,0.0,0.007,0.0,3.7703018188476562,0.0,0.0,26.396207809448242
+Evaluación,combineByKey @ BinaryClassificationMetrics.scala,1,8,0.223,1.545,1.234375,0.0,0.066,0.0,4.058417320251465,3.7703018188476562,0.0,19.08457088470459
+Evaluación,sortByKey @ BinaryClassificationMetrics.scala,1,8,0.219,1.592,1.328125,0.0,0.064,0.0,4.058417320251465,0.0,0.0,19.08457088470459
+Evaluación,collect @ BinaryClassificationMetrics.scala,1,8,0.161,1.09,0.984375,0.0,0.015,0.0,3.7703018188476562,0.0,0.0,26.396207809448242
+Evaluación,collect @ AreaUnderCurve.scala,1,8,0.151,1.023,0.859375,0.0,0.04,0.0,3.7703018188476562,0.0,0.0,26.396207809448242

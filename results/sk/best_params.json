@@ -1,0 +1,28 @@
+{
+ "enc": "hash12",
+ "params": {
+  "hidden": [
+   100
+  ],
+  "alpha": 0.026571184915208008,
+  "lr": 0.00020921442976599712,
+  "batch": 2048
+ },
+ "auc": 0.738699156875833,
+ "trials": 30,
+ "mejor_prueba": {
+  "enc": "hash12",
+  "params": {
+   "hidden": [
+    256,
+    128
+   ],
+   "alpha": 0.0001566699757555522,
+   "lr": 0.0033761447165303595,
+   "batch": 512
+  },
+  "auc": 0.7392037621709503,
+  "trials": 30
+ },
+ "regla": "Red mas simple a menos de una desviacion entre semillas (0,0017) de la mejor prueba. La mejor prueba costaria 2,3 h por ajuste con 10 M."
+}

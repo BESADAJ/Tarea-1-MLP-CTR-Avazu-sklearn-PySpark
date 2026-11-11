@@ -1,0 +1,15 @@
+data/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+book/_build/
+results/**/*.log
+
+# Volcado de propiedades del sistema de Spark UI (no lo usa ningún capítulo)
+results/bench/spark_ui/environment.json
+
+# Enunciado del curso
+*.pdf
+
+# Estado interno de las secuencias reanudables
+results/bench/done.txt

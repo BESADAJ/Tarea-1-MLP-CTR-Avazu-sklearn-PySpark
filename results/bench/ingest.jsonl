@@ -1,0 +1,13 @@
+{"step": "csv_to_parquet", "engine": "duckdb", "n": 40428967, "sec": 286.6329482, "gb": 13.86126708984375}
+{"step": "parquet_size", "engine": "disk", "n": 40428967, "gb": 1.2207422573119402, "sec": 0}
+{"step": "read_csv_count", "engine": "spark", "n": 40428967, "sec": 7.399754599999994, "gb": 1.4328384399414062}
+{"step": "csv_transform_noop", "engine": "spark", "n": 40428967, "sec": 61.62260450000002, "gb": 14.4140625}
+{"step": "read_csv_count", "engine": "spark", "n": 40428967, "sec": 7.1610016000000005, "gb": 1.8861427307128906}
+{"step": "csv_transform_noop", "engine": "spark", "n": 40428967, "sec": 57.967534900000004, "gb": 14.42215347290039}
+{"step": "agg_parquet", "engine": "spark", "n": 40428967, "sec": 6.513909499999997, "gb": 16.111827850341797}
+{"step": "agg_csv", "engine": "spark", "n": 40428967, "sec": 22.675927900000005, "gb": 13.194507598876953}
+{"step": "agg_csv", "engine": "polars", "n": 40428967, "sec": 8.310898100000003, "gb": 16.839069366455078}
+{"step": "agg_csv", "engine": "duckdb", "n": 40428967, "sec": 5.124174999999994, "gb": 12.879417419433594}
+{"step": "agg_parquet", "engine": "polars", "n": 40428967, "sec": 0.27251760000000047, "gb": 12.420440673828125}
+{"step": "agg_parquet", "engine": "duckdb", "n": 40428967, "sec": 0.09685430000000395, "gb": 12.411067962646484}
+{"step": "agg_csv_2col_train", "engine": "pandas", "n": 32343172, "sec": 56.006642699999986, "gb": 13.386035919189453}
